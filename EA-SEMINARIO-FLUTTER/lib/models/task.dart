@@ -1,0 +1,71 @@
+import 'organization.dart';
+
+class Task {
+  final String id;
+  final String titulo;
+  final DateTime fechaInicio;
+  final DateTime fechaFin;
+  final List<OrganizationUser> usuarios;
+  final String status;
+
+  Task({
+    required this.id,
+    required this.titulo,
+    required this.fechaInicio,
+    required this.fechaFin,
+    required this.usuarios,
+    this.status = 'todo',
+  });
+
+  factory Task.fromJson(Map<String, dynamic> json) {
+    final String id = (json['_id'] ?? json['id'] ?? '').toString();
+
+    final String titulo =
+        (json['titulo'] ?? json['title'] ?? 'Sin título').toString();
+
+    final String status =
+    (json['status'] ?? json['estado'] ?? 'todo').toString();
+
+    return Task(
+      id: id,
+      titulo: titulo,
+      status: status,
+      fechaInicio: _parseDate(json['fechaInicio'] ?? json['fecha_inicio']),
+      fechaFin: _parseDate(json['fechaFin'] ?? json['fecha_fin']),
+      usuarios: (json['usuarios'] as List<dynamic>?)
+              ?.map((dynamic u) => OrganizationUser.fromJson(u))
+              .toList() ??
+          [],
+    );
+  }
+
+  Task copyWith({
+  String? id,
+  String? titulo,
+  DateTime? fechaInicio,
+  DateTime? fechaFin,
+  List<OrganizationUser>? usuarios,
+  String? status,
+}) {
+  return Task(
+    id: id ?? this.id,
+    titulo: titulo ?? this.titulo,
+    fechaInicio: fechaInicio ?? this.fechaInicio,
+    fechaFin: fechaFin ?? this.fechaFin,
+    usuarios: usuarios ?? this.usuarios,
+    status: status ?? this.status,
+  );
+}
+
+  static DateTime _parseDate(dynamic value) {
+    if (value is String) {
+      final DateTime? parsed = DateTime.tryParse(value);
+      if (parsed != null) {
+        return parsed;
+      }
+    }
+
+    throw FormatException('Fecha inválida en Task: $value');
+  }
+  
+}
