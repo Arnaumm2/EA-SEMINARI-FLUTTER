@@ -74,7 +74,6 @@ class OrganizationService {
           'fechaInicio': fechaInicio.toUtc().toIso8601String(),
           'fechaFin': fechaFin.toUtc().toIso8601String(),
           'usuarios': usuarios,
-          'status': 'todo',
         }),
       );
 
